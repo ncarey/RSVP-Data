@@ -1,15 +1,16 @@
+#read in filename to save image to
 arglist = argv ();
 filename = arglist{1};
 
-x = dlmread('/home/ncarey/gitrepos/RSVP-Data/data/testx.txt',',')
-y = dlmread('/home/ncarey/gitrepos/RSVP-Data/data/testy.txt',',')
-z = dlmread('/home/ncarey/gitrepos/RSVP-Data/data/testz.txt',',')
+x = dlmread('datapoints/x.txt',',')
+y = dlmread('datapoints/y.txt',',')
+z = dlmread('datapoints/z.txt',',')
 
-#x = [1,1,-1,-1,1,1,-1,-1]
-#y = [1,-1,-1,1,1,-1,-1,1]
-#z = [1,1,1,1,-1,-1,-1,-1]
+#add in integer after xyz to control size of datapoints. Default seems fine for now
+#scatter3(x,y,z,5)
 
 scatter3(x,y,z)
-
 axis("off")
-print -dpng filename
+
+#print -dpng derp
+print (filename, "-dpng")

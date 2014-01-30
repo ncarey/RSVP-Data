@@ -1,11 +1,12 @@
 import random
 from optparse import OptionParser
+import subprocess
 
 
 cube_corners = {"x":[1,1,-1,-1,1,1,-1,-1], "y":[1,-1,-1,1,1,-1,-1,1], "z":[1,1,1,1,-1,-1,-1,-1]}
 
-#take a point from the cube corners:
-#  make one element random(1,-1)+noise and add noise to the other two elements
+#take a random cube corner:
+#  make one of x, y, or z = random(1,-1)+noise and then add noise to the others 
 
 def add_cube(dataset, noise_factor, size):
   random.seed()
@@ -46,7 +47,7 @@ def add_background(dataset, size):
 
 
 def print_dataset(dataset):
-  with open("/home/ncarey/gitrepos/RSVP-Data/data/testx.txt", "w") as x_file, open("/home/ncarey/gitrepos/RSVP-Data/data/testy.txt","w") as y_file, open("/home/ncarey/gitrepos/RSVP-Data/data/testz.txt","w") as z_file:
+  with open("datapoints/x.txt", "w") as x_file, open("datapoints/y.txt","w") as y_file, open("datapoints/z.txt","w") as z_file:
     for coord in dataset:
       x_file.write("{0},".format(coord[0]))
       y_file.write("{0},".format(coord[1]))
@@ -58,6 +59,10 @@ def print_dataset(dataset):
     z_file.write("1")
 
 
+def print_viz(filename):
+  cmd = 'octave viz.m "{0}"'.format(filename)
+  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+
 
 
 if __name__ =='__main__':
@@ -66,7 +71,7 @@ if __name__ =='__main__':
   parser = OptionParser(usage=usage)
 
   parser.add_option("-s", "--cubesize", type="int", dest="csize",
-                     default=100, help="Specify how many data points in cube",
+                     default=400, help="Specify how many data points in cube",
                      metavar="#CSIZE")
   parser.add_option("-t", "--tsize", type="int", dest="tsize",
                      default=500, help="Specifty how many data points total per image. Number of background noise datapoints = total points - data points in cube",
@@ -75,13 +80,34 @@ if __name__ =='__main__':
                      default=.01, help="Determine how noisy the generated cube data should be",
                      metavar="#CNOISE")
 
+  parser.add_option("-f", "--fnprefix", type="string", dest="fnpre",
+                     default="../data/images/default/default", help="Specify the path and filename prefix for the output images. Parameter example: /home/ncarey/data/test will produce a set of images in directory /home/ncarey/data/ with filenames test-XXX.cube.png",
+                     metavar="#FNPRE")
 
+  parser.add_option("-i", "--imagecount", type="int", dest="imgc",
+                     default="5", help="Specify how many total images to produce",
+                     metavar="#IMGC")
+  parser.add_option("-k", "--cubeimgcount", type="int", dest="imgcc",
+                     default="1", help="Specify how many images with cubes to produce",
+                     metavar="#IMGCC")
   (options, args) = parser.parse_args()
 
-  dataset = []
+  num_images = options.imgc
+  num_cubes = options.imgcc
 
-  add_cube(dataset, options.cnoise, options.csize)
-  add_background(dataset, options.tsize - options.csize)
-  print_dataset(dataset)
+  for i in range(100, 100+num_images):
+    dataset = []
+
+    if (i-100) < num_cubes:
+      add_cube(dataset, options.cnoise, options.csize)
+      add_background(dataset, options.tsize - options.csize)
+      viz_filename = options.fnpre + "-{0}.cube.png".format(i)
+    else:
+      add_background(dataset, options.tsize)
+      viz_filename = options.fnpre + "-{0}.noise.png".format(i)
+    
+    print_dataset(dataset)
+    print_viz(viz_filename)
+
 
 

@@ -3,26 +3,50 @@ arglist = argv ();
 filename = arglist{1};
 dims = str2num(arglist{2});
 
-data = []
+err = .00001
+
+data = [];
 
 for i=1:dims
-  data = [data;dlmread(sprintf('datapoints/dim%i.txt',i),',')]
+  data = [data;dlmread(sprintf('datapoints/dim%i.txt',i),',')];
 end
 
 
 #generate random rotation matrix
 # code taken from http://www.mathworks.com/matlabcentral/newsreader/view_thread/298500
 
-[Q,R] = qr(randn(dims))
+[Q,R] = qr(randn(dims));
 Q = Q*diag(sign(diag(R)))
 
-rotdata = []
+#verify Q is a rotation matrix
+d = det(Q)
+if (d < (1.0 + err) && d > (1.0 - err))
+  printf("det(Q) is 1. \n")
+else
+  printf("det(Q) is not 1. Will attempt to fix. \n")
+  Q(:,1) = Q(:,1) * -1
+  d = det(Q)
+  if (d < (1.0 + err) && d > (1.0 - err))
+    printf("det(Q) is now 1. Q is fixed \n")
+  else
+    printf("Could not fix Q. det(Q) is not 1")
+    quit(1)
+  endif
+  
+endif
 
-#iterate thru points
-for i=1:(length(data(1,:)))
-  point = data(:,i)
-  rotdata = [rotdata,Q*point]
-end
+V = Q' - inverse (Q)
+if all( all( V < err ))
+  printf("Q' == inverse (Q). Q is a rotation matrix \n")
+else
+  printf("Q' != inverse (Q).  Q is not a rotation matrix \n")
+  quit(1)
+endif
+
+
+rotdata = [];
+
+rotdata = Q * data;
 
 #iterate thru dimensions and print each pair of dims
 for i=1:(length(data(:,1)))
@@ -33,13 +57,3 @@ for i=1:(length(data(:,1)))
   end
 end
 
-
-#scatter3(x,y,z)
-#scatter3(rotdata(1,:),rotdata(2,:),rotdata(3,:))
-#scatter3(data(1,:),data(2,:),data(3,:))
-#scatter(roty,rotz)
-
-#axis("off")
-
-#print -dpng derp
-#print (filename, "-dpng")

@@ -107,7 +107,7 @@ if __name__ =='__main__':
       viz_filename = options.fnpre + "-{0}.noise.png".format(i)
     
     print_dataset(dataset)
-    print_viz(viz_filename)
+   # print_viz(viz_filename)
 
 
 

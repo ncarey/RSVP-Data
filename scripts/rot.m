@@ -1,7 +1,6 @@
 #read in filename to save image to; read in number of dimensions in data
 arglist = argv ();
-filename = arglist{1};
-dims = str2num(arglist{2});
+dims = str2num(arglist{1});
 
 err = .00001
 
@@ -48,12 +47,14 @@ rotdata = [];
 
 rotdata = Q * data;
 
+save sim_data rotdata
+
 #iterate thru dimensions and print each pair of dims
 for i=1:(length(data(:,1)))
-  for j=(i+1):(length(data(:,1)))
+  for j=(i+1):(length(data(:,1)))    
     scatter(rotdata(i,:), rotdata(j,:))
     axis("off")
-    print (sprintf('%s.%i-%i.png',filename,i,j), "-dpng")
+    print (sprintf('%iDsimdata.%i-%i.png',dims,i,j), "-dpng")
   end
 end
 

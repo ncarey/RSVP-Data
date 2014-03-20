@@ -1,0 +1,11 @@
+step 1: Generate cube and noise
+  use python gen_data.py with appropriate parameters to generate arrays of data. each array is a dimension. 
+
+step 2: Rotate cube+noise in X dimensions to create simulated dataset
+  use octave rot.m [dims] to create the simulated dataset
+
+step 3: perform random rotations on the simulated dataset. Try to find the original cube in the random rots
+  use octave rand_rot.m [path to datadir] 
+  then, mplayer mf://*.png  -loop 0 -fps 4
+
+TODO: ordered rotations

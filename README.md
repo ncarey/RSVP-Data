@@ -12,7 +12,8 @@ How to run:
   - Look at the ./run.sh script
   - make sure to set the RSVP_DATA_HOME environment variable as this directory.
     - look at the run.sh script
-
+  - To play a movie similar to what RSVP will show the subject:
+    - mplayer mf://*.png  -loop 0 -fps 4
 
 Set of scripts used for creating image (.png) datasets for use on testing the RSVP Brain-Computer
 Interface System.  RSVP monitors human brain P300 waves - we typically fire off a P300 wave when

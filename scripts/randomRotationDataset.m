@@ -54,12 +54,24 @@ for rotnum=numrotstart:numrotend
   #print out rotation matrix
   csvwrite(sprintf('%i.rotation_matrix.txt',rotnum),Q)
 
+
+  X = rotdata(1,:)';
+  Y = rotdata(2,:)';
+  colormap(gray())
+  axis([-2,2,-2,2],"square")
+  [c,x,y] = hist2d([X,Y],50,50); imagesc(x,y,c)
+  axis([-2,2,-2,2],"square")
+  #axis("off")
+  set(gca,'ydir','normal');
+ 
+  print (sprintf('hist/%i.hist.randrot.1-2.png',rotnum), "-dpng", "-S512,512")
+  
   scatter(rotdata(1,:), rotdata(2,:),[],[0,0,0],"filled")
   set (gcf, 'color', 'black')
  
   axis([-2,2,-2,2],"square")
   axis("off")
-  print (sprintf('%i.randrot.1-2.png',rotnum), "-dpng", "-S512,512")
+  print (sprintf('scatter/%i.randrot.1-2.png',rotnum), "-dpng", "-S512,512")
 
   #iterate thru dimensions and print each pair of dims
   #for i=1:(length(data(:,1)))

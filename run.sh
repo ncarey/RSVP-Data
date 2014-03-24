@@ -7,4 +7,4 @@ python ./scripts/genCubeAndNoise.py --cubesize 500 --tsize 500 --cubenoise 0 --n
 
 python ./scripts/genSimulatedDataset.py --name noCubeNoise5D --dimensions 5
 
-python ./scripts/genRandRotationDataset.py  --name noCubeNoise5D --rotations 1000 --dimensions 5
+python ./scripts/genRandRotationDataset.py  --name noCubeNoise5D --rotations 10 --dimensions 5

@@ -39,15 +39,15 @@ def gen_data(dataset, noise_factor, size, cube_size, dims):
       z += rand_noise_z
 
     else:
-      x = random.uniform(-2,2)
-      y = random.uniform(-2,2)
-      z = random.uniform(-2,2)
+      x = random.uniform(-4,4)
+      y = random.uniform(-4,4)
+      z = random.uniform(-4,4)
 
     coords = [x,y,z]
     
     #cube coordinates complete, now noise coordinates
     for j in range(3,dims):
-      coords.append(random.uniform(-2,2))
+      coords.append(random.uniform(-4,4))
     
 
     

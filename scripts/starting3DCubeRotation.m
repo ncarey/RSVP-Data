@@ -60,6 +60,8 @@ end
 #print 3D picture of starting cube
 scatter3(rotdata(1,:), rotdata(2,:), rotdata(3,:))
 axis("off")
+axis([-2,2,-2,2],"square")
+
 print -dpng startingCube
 
 
@@ -77,6 +79,7 @@ for i=1:(length(alldata(:,1)))
   for j=(i+1):(length(alldata(:,1)))
     scatter(alldata(i,:), alldata(j,:))
     axis("off")
+    axis([-2,2,-2,2],"square")
     print (sprintf('startdata.%i-%i.png',i,j), "-dpng")
   end
 end

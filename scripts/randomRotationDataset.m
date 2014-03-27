@@ -54,14 +54,27 @@ for rotnum=numrotstart:numrotend
   #print out rotation matrix
   csvwrite(sprintf('%i.rotation_matrix.txt',rotnum),Q)
 
+  #put corners on for uniform hist bins
+  X = [rotdata(1,:)';2.1;2.1;-2.1;-2.1];
+  Y = [rotdata(2,:)';2.1;-2.1;2.1;-2.1];
+  hist_mat = [X,Y];
+  
+  #some hacked up code to filter everything outside of -2,2
+  idx = ( hist_mat(:,1)<=2.1);
+  hist_mat1 = hist_mat(idx,:);
+  idx = ( hist_mat1(:,2)<=2.1);
+  hist_mat2 = hist_mat1(idx,:);
+  idx = ( hist_mat2(:,1)>=-2.1);
+  hist_mat3 = hist_mat2(idx,:);
+  idx = ( hist_mat3(:,2)>=-2.1);
+  hist_mat4 = hist_mat3(idx,:);
 
-  X = rotdata(1,:)';
-  Y = rotdata(2,:)';
+
   colormap(gray())
   axis([-2,2,-2,2],"square")
-  [c,x,y] = hist2d([X,Y],50,50); imagesc(x,y,c)
+  [c,x,y] = hist2d(hist_mat4,60,60); imagesc(x,y,c)
   axis([-2,2,-2,2],"square")
-  #axis("off")
+  axis("off")
   set(gca,'ydir','normal');
  
   print (sprintf('hist/%i.hist.randrot.1-2.png',rotnum), "-dpng", "-S512,512")

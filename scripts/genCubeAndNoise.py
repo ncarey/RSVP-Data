@@ -32,7 +32,7 @@ def gen_data(dataset, noise_factor, size, cube_size, dims):
       elif rand_xyz == 2:
         z = random.uniform(-1,1)
       else:
-        print "ERROR MR ROBINSON ERROR"
+        print "ERROR MR ERROR"
 
       x += rand_noise_x
       y += rand_noise_y

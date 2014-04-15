@@ -2,6 +2,7 @@ import random
 from optparse import OptionParser
 import subprocess
 import os
+from math import *
 
 cube_corners = {"x":[1,1,-1,-1,1,1,-1,-1], "y":[1,-1,-1,1,1,-1,-1,1], "z":[1,1,1,1,-1,-1,-1,-1]}
 
@@ -11,7 +12,7 @@ cube_corners = {"x":[1,1,-1,-1,1,1,-1,-1], "y":[1,-1,-1,1,1,-1,-1,1], "z":[1,1,1
 #  make one of x, y, or z = random(1,-1)+noise and then add noise to the others a
 
 
-def gen_data(dataset, noise_factor, size, cube_size, dims):
+def gen_data(dataset, noise_factor, size, cube_size, dims, sphere):
   random.seed()
   for i in range(0,size):
     if i < cube_size:
@@ -39,17 +40,24 @@ def gen_data(dataset, noise_factor, size, cube_size, dims):
       z += rand_noise_z
 
     else:
-      x = random.uniform(-4,4)
-      y = random.uniform(-4,4)
-      z = random.uniform(-4,4)
+      if sphere is not 1:
+       x = random.uniform(-4,4)
+       y = random.uniform(-4,4)
+       z = random.uniform(-4,4)
+      else:
+       x = random.uniform(-4,4)
+       y = random.uniform(-4,4)
+       z = random.uniform(-4,4)
 
     coords = [x,y,z]
     
     #cube coordinates complete, now noise coordinates
-    for j in range(3,dims):
-      coords.append(random.uniform(-4,4))
-    
-
+    if sphere is not 1:
+      for j in range(3,dims):
+        coords.append(random.uniform(-4,4))
+    else:
+      for j in range(3,dims):
+        coords.append(random.uniform(-4,4))
     
     dataset.append(coords)
 
@@ -114,6 +122,9 @@ if __name__ =='__main__':
   parser.add_option("-d", "--dimensions", type="int", dest="dims",
                      default="5", help="Specify how many dimensions of data to produce. The first three dimensions will form coordinates for the cube, the remaining dimensions will be uniform random noise between -2 and 2",
                      metavar="#DIMS")
+  parser.add_option("-o", "--spherenoise", type="int", dest="sphere",
+                     default="0", help="Specify 1 if you want the noise to be spherical in structure.",
+                     metavar="#SPHERE")
   
   (options, args) = parser.parse_args()
 
@@ -123,7 +134,7 @@ if __name__ =='__main__':
    
     dataset = []
 
-    gen_data(dataset, options.cnoise, options.tsize, options.csize, options.dims)
+    gen_data(dataset, options.cnoise, options.tsize, options.csize, options.dims, options.sphere)
     print_dataset(dataset, options.dims, data_dir_path)  
     rotateStartCube(rsvp_data_home, data_dir_path, options.dims)
 

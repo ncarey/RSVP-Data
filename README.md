@@ -14,6 +14,9 @@ How to run:
     - look at the run.sh script
   - To play a movie similar to what RSVP will show the subject:
     - mplayer mf://*.png  -loop 0 -fps 4
+  - To print a movie similar to above but to a file:
+    - mencoder mf://*.png -mf type=png:w=512:h=512:fps=4 -ovc x264 -x264encopts preset=slow:tune=film:threads=auto:crf=18 -o 5Dhist.mov
+
 
 Set of scripts used for creating image (.png) datasets for use on testing the RSVP Brain-Computer
 Interface System.  RSVP monitors human brain P300 waves - we typically fire off a P300 wave when

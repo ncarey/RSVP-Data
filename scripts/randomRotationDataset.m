@@ -49,10 +49,29 @@ for rotnum=numrotstart:numrotend
   endif
 
 
+
+  #grab simulated rotation matrix to caclulate principle angles
+  simrot = []
+  simrot = dlmread('../simulatedSet/rotation_matrix.txt',',');
+  
+  #testing 
+  #Q = simrot'
+  Q = Q(1:2,:);
   rotdata = Q * data;
+  
+  A = simrot(:,1:3);
+
+  #B = Q(1:2,:)'
+
+  theta = subspace(A,Q')
+  
+
 
   #print out rotation matrix
-  csvwrite(sprintf('%i.rotation_matrix.txt',rotnum),Q)
+  csvwrite(sprintf('%0.5f.rotation_matrix.txt',theta),Q)
+
+  
+
 
   #put corners on for uniform hist bins
   X = [rotdata(1,:)';2.1;2.1;-2.1;-2.1];
@@ -77,14 +96,16 @@ for rotnum=numrotstart:numrotend
   axis("off")
   set(gca,'ydir','normal');
  
-  print (sprintf('hist/%i.hist.randrot.1-2.png',rotnum), "-dpng", "-S512,512")
+  print (sprintf('hist/%0.5f.hist.randrot.1-2.png',theta), "-dpng", "-S512,512")
+  #print (sprintf('hist/%i.hist.randrot.1-2.png',rotnum), "-dpng", "-S512,512")
   
   scatter(rotdata(1,:), rotdata(2,:),[],[0,0,0],"filled")
   set (gcf, 'color', 'black')
  
   axis([-2,2,-2,2],"square")
   axis("off")
-  print (sprintf('scatter/%i.randrot.1-2.png',rotnum), "-dpng", "-S512,512")
+  print (sprintf('scatter/%0.5f.randrot.1-2.png',theta), "-dpng", "-S512,512")
+  #print (sprintf('scatter/%i.randrot.1-2.png',rotnum), "-dpng", "-S512,512")
 
   #iterate thru dimensions and print each pair of dims
   #for i=1:(length(data(:,1)))

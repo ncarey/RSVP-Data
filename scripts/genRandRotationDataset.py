@@ -25,19 +25,25 @@ def rand_rotate_print_dataset(dims, rot_dir_path, sim_dir_path, path, rots, para
     procs.append(subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
     cur_rot += rots_per_process
 
+
 #  for proc in procs:
 #    tmp = proc.poll()
 #    while(tmp == None):
 #      print "status {0}".format(tmp)
 #  time.sleep(10)
 
+  time.sleep(10)
   for proc in procs:
-    print proc.stdout.read()
-  
+    proc.stdout.read()
+    print "subprocess finished..."
 
   #invert the colors so there is black background with white dots
-  for i in range(0, rots):
-    cmd = "cd {0}/scatter; convert {1}.randrot.1-2.png -color-matrix '6x3: -1  0  0 0 0 1 0 -1 0 0 0 1 0 0 -1 0 0 1' {1}.randrot.1-2.png".format(rot_dir_path, i+1)
+  cmd = "cd {0}/scatter; ls".format(rot_dir_path)
+  files = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read().split()
+  
+  for mfile in files:
+    #cmd = "cd {0}/scatter; convert {1}.randrot.1-2.png -color-matrix '6x3: -1  0  0 0 0 1 0 -1 0 0 0 1 0 0 -1 0 0 1' {1}.randrot.1-2.png".format(rot_dir_path, i+1)
+    cmd = "cd {0}/scatter; convert {1} -color-matrix '6x3: -1  0  0 0 0 1 0 -1 0 0 0 1 0 0 -1 0 0 1' {1}".format(rot_dir_path, mfile)
 
     subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
 

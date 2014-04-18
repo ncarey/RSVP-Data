@@ -3,6 +3,7 @@ from optparse import OptionParser
 import subprocess
 import os
 from math import *
+import numpy as np
 
 cube_corners = {"x":[1,1,-1,-1,1,1,-1,-1], "y":[1,-1,-1,1,1,-1,-1,1], "z":[1,1,1,1,-1,-1,-1,-1]}
 
@@ -10,6 +11,56 @@ cube_corners = {"x":[1,1,-1,-1,1,1,-1,-1], "y":[1,-1,-1,1,1,-1,-1,1], "z":[1,1,1
 
 #take a random cube corner:
 #  make one of x, y, or z = random(1,-1)+noise and then add noise to the others a
+
+
+def gen_sphere_noise(N, dim, cubeNoiseFactor, cubeSize):
+  #generating points on surface of N-ball according to Marsaglia method
+  norm = np.random.normal
+  normal_deviates = norm(size=(dim, N))
+
+  radius = np.sqrt((normal_deviates**2).sum(axis=0))
+  points = normal_deviates/radius
+
+  #points are now uniformly distributed along surface of unit n-ball.
+  # we want points to be uniformly distributed amoung interior of n-ball
+  unif = np.random.uniform
+  uniform_deviates = unif(0,1,size=(1, N))
+  radius2 = uniform_deviates**(1.0/dim)
+
+  points = points * radius2
+  #points are now uniformly distributed inside unit n-ball
+  #multiply by 4 because we want larger n-ball
+  points = points * 4
+  
+  #now we add wire cube to points
+  for i in range(0, cubeSize):
+    rand_xyz = random.randint(0,2)
+    rand_corner = random.randint(0,7)
+    rand_noise_x = random.uniform(-1,1) * cubeNoiseFactor
+    rand_noise_y = random.uniform(-1,1) * cubeNoiseFactor
+    rand_noise_z = random.uniform(-1,1) * cubeNoiseFactor
+    
+    x = cube_corners["x"][rand_corner]
+    y = cube_corners["y"][rand_corner]
+    z = cube_corners["z"][rand_corner]
+
+    if rand_xyz == 0:
+      x = random.uniform(-1,1)
+    elif rand_xyz == 1:
+      y = random.uniform(-1,1)
+    elif rand_xyz == 2:
+      z = random.uniform(-1,1)
+    else:
+      print "ERROR MR ERROR"
+
+    x += rand_noise_x
+    y += rand_noise_y
+    z += rand_noise_z
+    points[0][i] = x
+    points[1][i] = y
+    points[2][i] = z
+  
+  return points
 
 
 def gen_data(dataset, noise_factor, size, cube_size, dims, sphere):
@@ -76,14 +127,14 @@ def print_dataset(dataset, dims, path):
     if i < 3:
       #print out pre-rotated cube
       with open(path + "/pre_cube_rot_dim{0}.txt".format(i+1), "w") as dim_file:
-        for coord in dataset:
-          dim_file.write("{0},".format(coord[i]))
+        for coord in dataset[i]:
+          dim_file.write("{0},".format(coord))
         dim_file.write("1")
     else:
       #simply print out final noise data; no need to rotate with cube
       with open(path + "/dim{0}.txt".format(i+1), "w") as dim_file:
-        for coord in dataset:
-          dim_file.write("{0},".format(coord[i]))
+        for coord in dataset[i]:
+          dim_file.write("{0},".format(coord))
         dim_file.write("1")
       
 
@@ -132,9 +183,7 @@ if __name__ =='__main__':
     rsvp_data_home = os.environ['RSVP_DATA_HOME']
     data_dir_path = rsvp_data_home + "/datasets/" + options.setname + "/startSet/"
    
-    dataset = []
-
-    gen_data(dataset, options.cnoise, options.tsize, options.csize, options.dims, options.sphere)
+    dataset = gen_sphere_noise(options.tsize, options.dims, options.cnoise, options.csize)
     print_dataset(dataset, options.dims, data_dir_path)  
     rotateStartCube(rsvp_data_home, data_dir_path, options.dims)
 

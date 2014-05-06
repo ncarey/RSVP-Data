@@ -3,16 +3,16 @@ dims = str2num(arglist{1});
 #numrots = str2num(arglist{2});
 numrotstart = str2num(arglist{2});
 numrotend = str2num(arglist{3});
-err = .00001
+err = .00001;
 
-data = []
+data = [];
 
 for i=1:dims
   data = [data;dlmread(sprintf('../simulatedSet/dim%i.txt',i),',')];
 end
 
 
-rotnum = numrotstart
+rotnum = numrotstart;
 
 
 for rotnum=numrotstart:numrotend
@@ -21,37 +21,37 @@ for rotnum=numrotstart:numrotend
   # code taken from http://www.mathworks.com/matlabcentral/newsreader/view_thread/298500
 
   [Q,R] = qr(randn(dims));
-  Q = Q*diag(sign(diag(R)))
+  Q = Q*diag(sign(diag(R)));
 
   #verify Q is a rotation matrix
-  d = det(Q)
+  d = det(Q);
   if (d < (1.0 + err) && d > (1.0 - err))
-    printf("det(Q) is 1. \n")
+    #printf("det(Q) is 1. \n")
   else
-    printf("det(Q) is not 1. Will attempt to fix. \n")
-    Q(:,1) = Q(:,1) * -1
-    d = det(Q)
+    #printf("det(Q) is not 1. Will attempt to fix. \n")
+    Q(:,1) = Q(:,1) * -1;
+    d = det(Q);
     if (d < (1.0 + err) && d > (1.0 - err))
-      printf("det(Q) is now 1. Q is fixed \n")
+      #printf("det(Q) is now 1. Q is fixed \n")
     else
-      printf("Could not fix Q. det(Q) is not 1")
+      #printf("Could not fix Q. det(Q) is not 1")
       quit(1)
     endif
 
   endif
 
-  V = Q' - inverse (Q)
+  V = Q' - inverse (Q);
   if all( all( V < err ))
-    printf("Q' == inverse (Q). Q is a rotation matrix \n")
+    #printf("Q' == inverse (Q). Q is a rotation matrix \n")
   else
-    printf("Q' != inverse (Q).  Q is not a rotation matrix \n")
+    #printf("Q' != inverse (Q).  Q is not a rotation matrix \n")
     quit(1)
   endif
 
 
 
   #grab simulated rotation matrix to caclulate principle angles
-  simrot = []
+  simrot = [];
   simrot = dlmread('../simulatedSet/rotation_matrix.txt',',');
   
   #testing 
@@ -63,7 +63,7 @@ for rotnum=numrotstart:numrotend
 
   #B = Q(1:2,:)'
 
-  theta = subspace(A,Q')
+  theta = subspace(A,Q');
   
 
 

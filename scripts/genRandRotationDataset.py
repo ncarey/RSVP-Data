@@ -3,27 +3,43 @@ from optparse import OptionParser
 import subprocess
 import os
 import time
+import multiprocessing
+
+def work(cmd):
+  #return subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+  return subprocess.call(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+  #return subprocess.call(cmd, shell=True)
+
 
 def rand_rotate_print_dataset(dims, rot_dir_path, sim_dir_path, path, rots, para):
   #clear and create directory
   cmd = 'rm -rf {0}'.format(rot_dir_path)
-  print subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
 
   cmd = 'mkdir -p {0}/hist'.format(rot_dir_path)
-  print subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
   cmd = 'mkdir -p {0}/scatter'.format(rot_dir_path)
-  print subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
 
   print "Generating random rotations of simulated dataset in {0}".format(rot_dir_path)
+  print time.time()
 
   rots_per_process = int(rots / para)
   cur_rot = 0
   procs = []
-  for i in range(0,para):
-    cmd = 'cd {0}; octave {1}/scripts/randomRotationDataset.m {2} {3} {4}'.format(rot_dir_path, path, dims, cur_rot, cur_rot + rots_per_process)
-    print cmd
-    procs.append(subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-    cur_rot += rots_per_process
+  cmd = 'cd {0}; octave {1}/scripts/randomRotationDataset.m {2} {3} {4}'.format(rot_dir_path, path, dims, cur_rot, cur_rot + rots_per_process)
+ 
+  pool = multiprocessing.Pool(processes=para)
+  pool.map(work, [cmd] * para)
+  pool.close()
+  pool.join()
+  print "Finished generating random rotations. inverting color scheme now"
+  print time.time()
+#  for i in range(0,para):
+#    cmd = 'cd {0}; octave {1}/scripts/randomRotationDataset.m {2} {3} {4}'.format(rot_dir_path, path, dims, cur_rot, cur_rot + rots_per_process)
+#    print cmd
+#    procs.append(subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+#    cur_rot += rots_per_process
 
 
 #  for proc in procs:
@@ -32,10 +48,10 @@ def rand_rotate_print_dataset(dims, rot_dir_path, sim_dir_path, path, rots, para
 #      print "status {0}".format(tmp)
 #  time.sleep(10)
 
-  time.sleep(10)
-  for proc in procs:
-    proc.stdout.read()
-    print "subprocess finished..."
+#  time.sleep(10)
+#  for proc in procs:
+#    proc.stdout.read()
+#    print "subprocess finished..."
 
   #invert the colors so there is black background with white dots
   cmd = "cd {0}/scatter; ls".format(rot_dir_path)
@@ -47,6 +63,8 @@ def rand_rotate_print_dataset(dims, rot_dir_path, sim_dir_path, path, rots, para
 
     subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
 
+  print "Complete"
+  print time.time()
 if __name__ =='__main__':
 
   usage = '''\tUse this script to generate the random rotation dataset.\n\tThis is the dataset which we use with RSVP.\n\tBy applying random N dimensional rotations to the simulated dataset,\n\twe hope to find the structure represented in the startSet'''

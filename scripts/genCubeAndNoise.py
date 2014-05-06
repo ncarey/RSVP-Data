@@ -1,3 +1,4 @@
+import time
 import random
 from optparse import OptionParser
 import subprocess
@@ -116,12 +117,13 @@ def gen_data(dataset, noise_factor, size, cube_size, dims, sphere):
 def print_dataset(dataset, dims, path):
   #clear and create directory
   cmd = 'rm -rf {0}'.format(path)
-  print subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
 
   cmd = 'mkdir -p {0}'.format(path)
-  print subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
 
   print "Generating dataset in {0}".format(path)
+  
 
   for i in range(0, dims):
     if i < 3:
@@ -140,7 +142,7 @@ def print_dataset(dataset, dims, path):
 
 def rotateStartCube(path, data_dir_path, dims):
   cmd = "cd {0}; octave {1}/scripts/starting3DCubeRotation.m {2}".format(data_dir_path, path, dims)
-  print subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
   cmd = "rm {0}/pre_cube_rot_dim*".format(data_dir_path)
   subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
 
@@ -178,6 +180,7 @@ if __name__ =='__main__':
                      metavar="#SPHERE")
   
   (options, args) = parser.parse_args()
+  print time.time()
 
   try:
     rsvp_data_home = os.environ['RSVP_DATA_HOME']

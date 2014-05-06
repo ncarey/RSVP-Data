@@ -1,4 +1,5 @@
 import random
+import time
 from optparse import OptionParser
 import subprocess
 import os
@@ -7,16 +8,16 @@ import os
 def rotate_print_dataset(dims, data_dir_path, sim_dir_path, path):
   #clear and create directory
   cmd = 'rm -rf {0}'.format(sim_dir_path)
-  print subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
 
   cmd = 'mkdir -p {0}'.format(sim_dir_path)
-  print subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
 
   print "Generating simulated dataset in {0}".format(sim_dir_path)
-
+  print time.time()
 
   cmd = 'cd {0}; octave {1}/scripts/simulatedDatasetRotation.m {2}'.format(sim_dir_path, path, dims)
-  print subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
 
 
 

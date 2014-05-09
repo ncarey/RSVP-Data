@@ -1,0 +1,11 @@
+\begin{thebibliography}{1}
+
+\bibitem{Amdahl}
+Gene~M. Amdahl.
+\newblock Validity of the single processor approach to achieving large scale
+  computing capabilities.
+\newblock In {\em Proceedings of the April 18-20, 1967, Spring Joint Computer
+  Conference}, AFIPS '67 (Spring), pages 483--485, New York, NY, USA, 1967.
+  ACM.
+
+\end{thebibliography}

@@ -7,4 +7,4 @@ python ./scripts/genCubeAndNoise.py --cubesize 1500 --tsize 1500 --cubenoise 0 -
 
 python ./scripts/genSimulatedDataset.py --name paraTest --dimensions 6
 
-python ./scripts/genRandRotationDataset.py  --name paraTest --rotations 1500 --dimensions 6 --para 2
+python ./scripts/genRandRotationDataset.py  --name paraTest --rotations 15 --dimensions 6 --para 2

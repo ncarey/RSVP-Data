@@ -10,7 +10,7 @@ if __name__ =='__main__':
     
     cmd = "./run2.sh {0} {1}".format(n*100, 1)
 
-    ret = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read();
+    ret = subprocess.Popen(cmd, shell=True).stdout.read();
 
     print ret
 

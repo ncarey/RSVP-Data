@@ -117,10 +117,10 @@ def gen_data(dataset, noise_factor, size, cube_size, dims, sphere):
 def print_dataset(dataset, dims, path):
   #clear and create directory
   cmd = 'rm -rf {0}'.format(path)
-  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.call(cmd, shell=True)
 
   cmd = 'mkdir -p {0}'.format(path)
-  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.call(cmd, shell=True)
 
   print "Generating dataset in {0}".format(path)
   
@@ -142,14 +142,16 @@ def print_dataset(dataset, dims, path):
 
 def rotateStartCube(path, data_dir_path, dims):
   cmd = "cd {0}; octave {1}/scripts/starting3DCubeRotation.m {2}".format(data_dir_path, path, dims)
-  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  FNULL = open(os.devnull, 'w')
+  subprocess.call(cmd, shell=True, stdout=FNULL, stderr=FNULL)
   cmd = "rm {0}/pre_cube_rot_dim*".format(data_dir_path)
-  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.call(cmd, shell=True, stdout=FNULL, stderr=FNULL)
 
 
 def print_viz(filename):
   cmd = 'octave viz.m "{0}"'.format(filename)
-  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  FNULL = open(os.devnull, 'w')
+  subprocess.call(cmd, shell=True, stdout=FNULL, stderr=FNULL)
 
 
 

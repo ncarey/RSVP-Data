@@ -7,19 +7,21 @@ import multiprocessing
 
 def work(cmd):
   #return subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-  return subprocess.call(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+  FNULL = open(os.devnull, 'w')
+  return subprocess.call(cmd, shell=True, stdout=FNULL, stderr=FNULL)
   #return subprocess.call(cmd, shell=True)
 
 
 def rand_rotate_print_dataset(dims, rot_dir_path, sim_dir_path, path, rots, para):
   #clear and create directory
+  FNULL = open(os.devnull, 'w')
   cmd = 'rm -rf {0}'.format(rot_dir_path)
-  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.call(cmd, shell=True, stdout=FNULL, stderr=FNULL)
 
   cmd = 'mkdir -p {0}/hist'.format(rot_dir_path)
-  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.call(cmd, shell=True, stdout=FNULL, stderr=FNULL)
   cmd = 'mkdir -p {0}/scatter'.format(rot_dir_path)
-  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+  subprocess.call(cmd, shell=True, stdout=FNULL, stderr=FNULL)
 
   print "Generating random rotations of simulated dataset in {0}".format(rot_dir_path)
   print time.time()
@@ -61,7 +63,7 @@ def rand_rotate_print_dataset(dims, rot_dir_path, sim_dir_path, path, rots, para
     #cmd = "cd {0}/scatter; convert {1}.randrot.1-2.png -color-matrix '6x3: -1  0  0 0 0 1 0 -1 0 0 0 1 0 0 -1 0 0 1' {1}.randrot.1-2.png".format(rot_dir_path, i+1)
     cmd = "cd {0}/scatter; convert {1} -color-matrix '6x3: -1  0  0 0 0 1 0 -1 0 0 0 1 0 0 -1 0 0 1' {1}".format(rot_dir_path, mfile)
 
-    subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+    subprocess.call(cmd, shell=True)
 
   print "Complete"
   print time.time()
